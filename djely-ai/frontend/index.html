@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Désactive le zoom intempestif sur mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>GuinéeLight ⚡</title>
+  <!-- Police futuriste "électrique" -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Orbitron', sans-serif;
+      margin: 0;
+      padding: 16px;
+      background: #0f172a;
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.8em;
+      margin: 0 0 16px;
+      color: #00eeff;
+      text-shadow: 0 0 10px rgba(0, 238, 255, 0.6);
+    }
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+      border: 1px solid #00eeff;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .message {
+      max-width: 80%;
+      padding: 10px 14px;
+      margin: 6px 0;
+      border-radius: 14px;
+      word-wrap: break-word;
+      font-size: 0.95em;
+    }
+    .user-msg {
+      align-self: flex-end;
+      background: rgba(0, 238, 255, 0.15);
+      color: #00eeff;
+      border: 1px solid rgba(0, 238, 255, 0.3);
+    }
+    .bot-msg {
+      align-self: flex-start;
+      background: rgba(255, 204, 0, 0.15);
+      color: #ffcc00;
+      border: 1px solid rgba(255, 204, 0, 0.3);
+    }
+    #input-area {
+      display: flex;
+      gap: 10px;
+    }
+    input {
+      flex: 1;
+      padding: 14px;
+      font-size: 16px;
+      font-family: 'Orbitron', sans-serif;
+      background: #1e293b;
+      color: white;
+      border: 1px solid #00eeff;
+      border-radius: 12px;
+      outline: none;
+    }
+    button {
+      padding: 14px 20px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      background: linear-gradient(135deg, #00eeff, #0077ff);
+      color: #0f172a;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(0, 238, 255, 0.5);
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      box-shadow: 0 0 18px rgba(0, 238, 255, 0.8);
+    }
+    button:active {
+      transform: scale(0.97);
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5em; }
+      .message { font-size: 0.9em; }
+      input, button { padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>GuinéeLight ⚡</h1>
+  <div id="chat"></div>
+  <div id="input-area">
+    <input type="text" id="user-input" placeholder="Chargement..." autocomplete="off" />
+    <button onclick="sendMessage()">Envoyer</button>
+  </div>
+
+  <script>
+    // Exemples réalistes liés au projet
+    const examples = [
+      "Il y a une panne à Kaloum",
+      "Pourquoi ma facture est-elle si élevée ?",
+      "Quand sera rétabli le courant à Dixinn ?",
+      "Comment contacter EDG ?",
+      "Ma facture n’est pas claire",
+      "Coupure depuis 3 jours à Ratoma"
+    ];
+
+    // Fonction pour ajouter un message avec heure
+    function addMessage(text, isUser = true) {
+      const chat = document.getElementById("chat");
+      const msgDiv = document.createElement("div");
+      msgDiv.className = isUser ? "message user-msg" : "message bot-msg";
+
+      const now = new Date();
+      const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
+                      now.getMinutes().toString().padStart(2, '0');
+
+      msgDiv.innerHTML = `<strong>${text}</strong><br><small style="opacity:0.6; font-size:0.7em;">${timeStr}</small>`;
+      chat.appendChild(msgDiv);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    // Envoyer un message
+    function sendMessage() {
+      const input = document.getElementById("user-input");
+      const text = input.value.trim();
+      if (!text) {
+        addMessage("Veuillez entrer un message.", false);
+        return;
+      }
+
+      addMessage(text, true);
+      input.value = "";
+
+      // Réponse simulée (à remplacer par Dialogflow le 5 nov)
+      setTimeout(() => {
+        addMessage("Merci ! Votre signalement a été enregistré.", false);
+      }, 600);
+    }
+
+    // Envoi avec la touche Entrée
+    document.getElementById("user-input").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    // Placeholder dynamique
+    function updatePlaceholder() {
+      const input = document.getElementById("user-input");
+      if (!input.value) {
+        input.placeholder = examples[Math.floor(Math.random() * examples.length)];
+      }
+    }
+
+    // Message de bienvenue au chargement
+    window.onload = () => {
+      setTimeout(() => {
+        addMessage("Bonjour ! Je suis GuinéeLight ⚡\nSignalez une panne ou demandez des infos sur votre facture.", false);
+      }, 500);
+
+      // Démarrer le changement de placeholder
+      setInterval(updatePlaceholder, 5000);
+      updatePlaceholder(); // immédiatement
+    };
+  </script>
+</body>
+</html>
