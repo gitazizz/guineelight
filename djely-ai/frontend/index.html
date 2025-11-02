@@ -1,181 +1,206 @@
+<!-- frontend/index.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <!-- Désactive le zoom intempestif sur mobile -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>GuinéeLight ⚡</title>
-  <!-- Police futuriste "électrique" -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Orbitron', sans-serif;
-      margin: 0;
-      padding: 16px;
-      background: #0f172a;
-      color: white;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    h1 {
-      text-align: center;
-      font-size: 1.8em;
-      margin: 0 0 16px;
-      color: #00eeff;
-      text-shadow: 0 0 10px rgba(0, 238, 255, 0.6);
-    }
-    #chat {
-      flex: 1;
-      overflow-y: auto;
-      background: #1e293b;
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-      border: 1px solid #00eeff;
-      margin-bottom: 16px;
-      display: flex;
-      flex-direction: column;
-    }
-    .message {
-      max-width: 80%;
-      padding: 10px 14px;
-      margin: 6px 0;
-      border-radius: 14px;
-      word-wrap: break-word;
-      font-size: 0.95em;
-    }
-    .user-msg {
-      align-self: flex-end;
-      background: rgba(0, 238, 255, 0.15);
-      color: #00eeff;
-      border: 1px solid rgba(0, 238, 255, 0.3);
-    }
-    .bot-msg {
-      align-self: flex-start;
-      background: rgba(255, 204, 0, 0.15);
-      color: #ffcc00;
-      border: 1px solid rgba(255, 204, 0, 0.3);
-    }
-    #input-area {
-      display: flex;
-      gap: 10px;
-    }
-    input {
-      flex: 1;
-      padding: 14px;
-      font-size: 16px;
-      font-family: 'Orbitron', sans-serif;
-      background: #1e293b;
-      color: white;
-      border: 1px solid #00eeff;
-      border-radius: 12px;
-      outline: none;
-    }
-    button {
-      padding: 14px 20px;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: bold;
-      background: linear-gradient(135deg, #00eeff, #0077ff);
-      color: #0f172a;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 0 12px rgba(0, 238, 255, 0.5);
-      transition: all 0.2s ease;
-    }
-    button:hover {
-      box-shadow: 0 0 18px rgba(0, 238, 255, 0.8);
-    }
-    button:active {
-      transform: scale(0.97);
-    }
-
-    @media (max-width: 600px) {
-      h1 { font-size: 1.5em; }
-      .message { font-size: 0.9em; }
-      input, button { padding: 12px; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Djely AI - Assistant SOG</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .chat-container {
+            width: 400px;
+            height: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background: #2E8B57;
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin: 10px 0;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            animation: fadeIn 0.3s;
+        }
+        
+        .user-message {
+            background: #007bff;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bot-message {
+            background: white;
+            border: 1px solid #ddd;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .chat-input-container {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+        
+        #userInput {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+        }
+        
+        #sendButton {
+            background: #2E8B57;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        
+        .quick-actions {
+            padding: 10px 15px;
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
-  <h1>GuinéeLight ⚡</h1>
-  <div id="chat"></div>
-  <div id="input-area">
-    <input type="text" id="user-input" placeholder="Chargement..." autocomplete="off" />
-    <button onclick="sendMessage()">Envoyer</button>
-  </div>
+    <div class="chat-container">
+        <!-- En-tête -->
+        <div class="chat-header">
+            <h2>🤖 Djely AI</h2>
+            <p>Assistant Service Client SOG</p>
+        </div>
+        
+        <!-- Messages -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                👋 Bonjour ! Je suis Djely, votre assistant SOG. 
+                Je peux vous aider avec les pannes, factures et urgences.
+            </div>
+        </div>
+        
+        <!-- Actions rapides -->
+        <div class="quick-actions">
+            <button class="quick-btn" onclick="quickMessage('Je signale une panne')">🚨 Panne</button>
+            <button class="quick-btn" onclick="quickMessage('Question sur ma facture')">📄 Facture</button>
+            <button class="quick-btn" onclick="quickMessage('Urgence médicale')">💊 Urgence</button>
+            <button class="quick-btn" onclick="quickMessage('Bonjour')">👋 Bonjour</button>
+        </div>
+        
+        <!-- Zone de saisie -->
+        <div class="chat-input-container">
+            <input type="text" id="userInput" placeholder="Tapez votre message..." onkeypress="handleKeyPress(event)">
+            <button id="sendButton" onclick="sendMessage()">Envoyer</button>
+        </div>
+    </div>
 
-  <script>
-    // Exemples réalistes liés au projet
-    const examples = [
-      "Il y a une panne à Kaloum",
-      "Pourquoi ma facture est-elle si élevée ?",
-      "Quand sera rétabli le courant à Dixinn ?",
-      "Comment contacter EDG ?",
-      "Ma facture n’est pas claire",
-      "Coupure depuis 3 jours à Ratoma"
-    ];
-
-    // Fonction pour ajouter un message avec heure
-    function addMessage(text, isUser = true) {
-      const chat = document.getElementById("chat");
-      const msgDiv = document.createElement("div");
-      msgDiv.className = isUser ? "message user-msg" : "message bot-msg";
-
-      const now = new Date();
-      const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
-                      now.getMinutes().toString().padStart(2, '0');
-
-      msgDiv.innerHTML = `<strong>${text}</strong><br><small style="opacity:0.6; font-size:0.7em;">${timeStr}</small>`;
-      chat.appendChild(msgDiv);
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    // Envoyer un message
-    function sendMessage() {
-      const input = document.getElementById("user-input");
-      const text = input.value.trim();
-      if (!text) {
-        addMessage("Veuillez entrer un message.", false);
-        return;
-      }
-
-      addMessage(text, true);
-      input.value = "";
-
-      // Réponse simulée (à remplacer par Dialogflow le 5 nov)
-      setTimeout(() => {
-        addMessage("Merci ! Votre signalement a été enregistré.", false);
-      }, 600);
-    }
-
-    // Envoi avec la touche Entrée
-    document.getElementById("user-input").addEventListener("keypress", (e) => {
-      if (e.key === "Enter") sendMessage();
-    });
-
-    // Placeholder dynamique
-    function updatePlaceholder() {
-      const input = document.getElementById("user-input");
-      if (!input.value) {
-        input.placeholder = examples[Math.floor(Math.random() * examples.length)];
-      }
-    }
-
-    // Message de bienvenue au chargement
-    window.onload = () => {
-      setTimeout(() => {
-        addMessage("Bonjour ! Je suis GuinéeLight ⚡\nSignalez une panne ou demandez des infos sur votre facture.", false);
-      }, 500);
-
-      // Démarrer le changement de placeholder
-      setInterval(updatePlaceholder, 5000);
-      updatePlaceholder(); // immédiatement
-    };
-  </script>
+    <script>
+        const backendUrl = 'http://localhost:5000';
+        
+        // Fonction pour envoyer un message
+        async function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+            
+            if (!message) return;
+            
+            // Afficher le message de l'utilisateur
+            displayMessage(message, 'user');
+            userInput.value = '';
+            
+            try {
+                // Envoyer au backend
+                const response = await fetch(`${backendUrl}/api/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        user_id: 'web_user_' + Date.now()
+                    })
+                });
+                
+                const data = await response.json();
+                displayMessage(data.reply, 'bot');
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                displayMessage('⚠️ Service temporairement indisponible. Veuillez réessayer.', 'bot');
+            }
+        }
+        
+        // Fonction pour les boutons rapides
+        function quickMessage(text) {
+            document.getElementById('userInput').value = text;
+            sendMessage();
+        }
+        
+        // Affichage des messages
+        function displayMessage(text, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Appuyer sur Entrée pour envoyer
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        // Focus automatique sur l'input
+        document.getElementById('userInput').focus();
+    </script>
 </body>
 </html>
