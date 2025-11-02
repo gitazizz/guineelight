@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Djely AI - Tableau de Bord</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div class="dashboard-header">
+        <h1>📊 Tableau de Bord - Djely AI</h1>
+        <p>Supervision en temps réel des demandes clients</p>
+    </div>
+    
+    <!-- Statistiques -->
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+            <div>Total Tickets</div>
+            <div class="stat-number" id="totalTickets">0</div>
+            <div>Toutes demandes</div>
+        </div>
+        <div class="stat-card">
+            <div>Nouveaux</div>
+            <div class="stat-number" id="newTickets">0</div>
+            <div>En attente</div>
+        </div>
+        <div class="stat-card">
+            <div>Urgences</div>
+            <div class="stat-number" id="urgentTickets">0</div>
+            <div>Priorité maximale</div>
+        </div>
+        <div class="stat-card">
+            <div>Résolus</div>
+            <div class="stat-number" id="resolvedTickets">0</div>
+            <div>Traités aujourd'hui</div>
+        </div>
+    </div>
+    
+    <!-- Liste des tickets -->
+    <div class="tickets-list">
+        <h2>🎫 Tickets Récents</h2>
+        <div id="ticketsList">
+            <div class="ticket-item">
+                <div>Chargement...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Carte des localisations -->
+    <div class="location-map">
+        <h2>📍 Zones d'Intervention</h2>
+        <div id="locationsMap">
+            <p>Chargement des données de localisation...</p>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -3,124 +3,21 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Djely AI - Assistant SOG</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: Arial, sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .chat-container {
-            width: 400px;
-            height: 600px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .chat-header {
-            background: #2E8B57;
-            color: white;
-            padding: 20px;
-            border-radius: 15px 15px 0 0;
-            text-align: center;
-        }
-        
-        .chat-messages {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            background: #f8f9fa;
-        }
-        
-        .message {
-            margin: 10px 0;
-            padding: 10px 15px;
-            border-radius: 15px;
-            max-width: 80%;
-            animation: fadeIn 0.3s;
-        }
-        
-        .user-message {
-            background: #007bff;
-            color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 5px;
-        }
-        
-        .bot-message {
-            background: white;
-            border: 1px solid #ddd;
-            margin-right: auto;
-            border-bottom-left-radius: 5px;
-        }
-        
-        .chat-input-container {
-            padding: 15px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 10px;
-        }
-        
-        #userInput {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            outline: none;
-        }
-        
-        #sendButton {
-            background: #2E8B57;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-        }
-        
-        .quick-actions {
-            padding: 10px 15px;
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-        
-        .quick-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+    <title>Djely AI - Assistant EDG</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="chat-container">
         <!-- En-tête -->
         <div class="chat-header">
             <h2>🤖 Djely AI</h2>
-            <p>Assistant Service Client SOG</p>
+            <p>Assistant Service Client EDG</p>
         </div>
         
         <!-- Messages -->
         <div class="chat-messages" id="chatMessages">
             <div class="message bot-message">
-                👋 Bonjour ! Je suis Djely, votre assistant SOG. 
+                👋 Bonjour ! Je suis Djely, votre assistant EDG. 
                 Je peux vous aider avec les pannes, factures et urgences.
             </div>
         </div>
@@ -140,67 +37,6 @@
         </div>
     </div>
 
-    <script>
-        const backendUrl = 'http://localhost:5000';
-        
-        // Fonction pour envoyer un message
-        async function sendMessage() {
-            const userInput = document.getElementById('userInput');
-            const message = userInput.value.trim();
-            
-            if (!message) return;
-            
-            // Afficher le message de l'utilisateur
-            displayMessage(message, 'user');
-            userInput.value = '';
-            
-            try {
-                // Envoyer au backend
-                const response = await fetch(`${backendUrl}/api/chat`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        user_id: 'web_user_' + Date.now()
-                    })
-                });
-                
-                const data = await response.json();
-                displayMessage(data.reply, 'bot');
-                
-            } catch (error) {
-                console.error('Erreur:', error);
-                displayMessage('⚠️ Service temporairement indisponible. Veuillez réessayer.', 'bot');
-            }
-        }
-        
-        // Fonction pour les boutons rapides
-        function quickMessage(text) {
-            document.getElementById('userInput').value = text;
-            sendMessage();
-        }
-        
-        // Affichage des messages
-        function displayMessage(text, sender) {
-            const chatMessages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}-message`;
-            messageDiv.textContent = text;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        
-        // Appuyer sur Entrée pour envoyer
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
-        
-        // Focus automatique sur l'input
-        document.getElementById('userInput').focus();
-    </script>
+    <script src="js/script.js"></script>
 </body>
 </html>
