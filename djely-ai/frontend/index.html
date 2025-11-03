@@ -37,6 +37,28 @@
         </div>
     </div>
 
+    <!-- Interface Vocale -->
+    <div style="position: fixed; bottom: 20px; right: 20px;">
+        <button id="voiceButton" onclick="toggleVoice()" 
+                style="background: #28a745; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            🎤
+        </button>
+        
+        <!-- Sélecteur de langue -->
+        <div id="languageSelector" style="display: none; position: absolute; bottom: 70px; right: 0; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 200px;">
+            <h4>🌍 Choisir la langue</h4>
+            <select id="languageSelect" onchange="changeLanguage()" style="width: 100%; padding: 8px; margin: 10px 0;">
+                <option value="fr">Français</option>
+                <option value="bambara">Bambara</option>
+                <option value="pular">Peul</option>
+                <option value="susu">Soussou</option>
+            </select>
+            <div id="voiceStatus" style="font-size: 12px; color: #666; text-align: center; margin-top: 10px;">
+                Cliquez 🎤 pour parler
+            </div>
+        </div>
+    </div>
+
     <script src="js/script.js"></script>
 </body>
 </html>

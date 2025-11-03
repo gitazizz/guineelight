@@ -62,10 +62,47 @@ class TicketSystem:
     
     def get_tickets(self):
         return self.data["tickets"]
+    
+    def create_ticket_with_notification(user_id, problem_type, location):
+        ticket_id = ticket_system.create_ticket(user_id, problem_type, location)
+        
+        # Ajouter notification
+        if problem_type == "urgence_medicale":
+            notification_system.add_notification(
+                "🚨 URGENCE MÉDICALE",
+                f"Ticket #{ticket_id} - {location}",
+                "urgent"
+            )
+        else:
+            notification_system.add_notification(
+                "🆕 Nouveau Ticket",
+                f"Ticket #{ticket_id} - {location}",
+                "info"
+            )
+        
+        return ticket_id
 
+# Notifications Et Alertes
+class NotificationSystem:
+    def __init__(self):
+        self.notifications = []
+    
+    def add_notification(self, title, message, level="info"):
+        notification = {
+            "id": len(self.notifications) + 1,
+            "title": title,
+            "message": message, 
+            "level": level,  # info, warning, urgent
+            "timestamp": datetime.datetime.now().isoformat(),
+            "read": False
+        }
+        self.notifications.append(notification)
+        return notification
+    
 # Initialisation
 ticket_system = TicketSystem()
 conv_manager = ConversationManager()
+notification_system = NotificationSystem()
 
 # Les Routes Principales
 @app.route('/')
@@ -124,7 +161,7 @@ def handle_location_response(user_id, location):
     # Gère la réponse de localisation pour une panne
     if location and len(location) > 2:
         # On cree le ticket
-        ticket_id = ticket_system.create_ticket(user_id, "panne", location)
+        ticket_id = ticket_system.create_ticket_with_notification(user_id, "panne", location)
         
         # Reponse avec confirmation
         response = f"""✅ **Ticket #{ticket_id} CRÉÉ AVEC SUCCÈS !**
@@ -146,7 +183,7 @@ def handle_location_response(user_id, location):
 def handle_emergency_response(user_id, location):
     # Gère les urgences médicales
     if location and len(location) > 5:
-        ticket_id = ticket_system.create_ticket(user_id, "urgence_medicale", location)
+        ticket_id = ticket_system.create_ticket_with_notification(user_id, "urgence_medicale", location)
         
         response = f"""🚨 **URGENCE MÉDICALE - INTERVENTION IMMÉDIATE !**
 
@@ -264,6 +301,139 @@ def update_ticket_status(ticket_id):
     
     return jsonify({"status": "error", "message": "Ticket non trouvé"}), 404
 
+# Support Vocal Multilangue
+@app.route('/api/voice/process', methods=['POST'])
+def process_voice_command():
+    # Endpoint pour traiter les commandes vocales
+    data = request.json
+    voice_text = data.get('text', '').lower()
+    language = data.get('language', 'fr')
+    user_id = data.get('user_id', 'anonymous')
+    
+    # Détection de langue basique
+    if any(word in voice_text for word in ['panne', 'coupure', 'électricité']):
+        response = {
+            "type": "panne_detected",
+            "message_fr": "Je détecte une panne. Quel est votre quartier ?",
+            "message_local": "N yɛlɛma dɔnnen don. I bɛ dugu jumen ?",
+            "next_step": "location"
+        }
+    
+    elif any(word in voice_text for word in ['facture', 'payer', 'argent']):
+        response = {
+            "type": "facture_detected", 
+            "message_fr": "Je comprends une question de facture. Quel est le problème ?",
+            "message_local": "N yɛ ka sɔrɔ wariko la. Mun na ?",
+            "next_step": "facture_detail"
+        }
+    
+    elif any(word in voice_text for word in ['urgence', 'hôpital', 'médecin']):
+        response = {
+            "type": "urgence_detected",
+            "message_fr": "🚨 URGENCE DÉTECTÉE ! Quel établissement médical ?",
+            "message_local": "🚨 Dɛsɛ dɔnnen ! Dɔgɔtɔrɔso jumen ?",
+            "next_step": "urgence_location"
+        }
+    
+    else:
+        response = {
+            "type": "not_understood",
+            "message_fr": "Je n'ai pas compris. Dites 'panne', 'facture' ou 'urgence'",
+            "message_local": "N ma kà sira. Fɔ 'panne', 'facture' walima 'urgence'",
+            "next_step": "retry"
+        }
+    
+    return jsonify(response)
+
+# Dictionnaire de phrases locales
+PHRASES_LOCALES = {
+    "fr": {
+        "welcome": "Bonjour, je suis Djely AI. Comment puis-vous aider ?",
+        "panne_ask_location": "Quel est votre quartier ou commune ?",
+        "urgence_ask_location": "Quel établissement médical ?",
+        "confirmation": "Merci, ticket créé avec succès"
+    },
+    "bambara": {
+        "welcome": "I ni ce, ne ye Djely AI ye. I bɛ se ka n dɛmɛ ?",
+        "panne_ask_location": "I bɛ dugu jumen ?", 
+        "urgence_ask_location": "Dɔgɔtɔrɔso jumen ?",
+        "confirmation": "A ni ce, ticket labɛn don"
+    }
+}
+
+@app.route('/api/languages', methods=['GET'])
+def get_supported_languages():
+    # Retourne les langues supportées
+    return jsonify({
+        "languages": [
+            {"code": "fr", "name": "Français", "native": "Français"},
+            {"code": "bambara", "name": "Bambara", "native": "Bamanankan"},
+            {"code": "pular", "name": "Peul", "native": "Pular"},
+            {"code": "susu", "name": "Soussou", "native": "Sosoxui"}
+        ]
+    })
+    
+@app.route('/api/notifications', methods=['GET'])
+def get_notifications():
+    # Récupérer les notifications
+    return jsonify({
+        "notifications": notification_system.notifications[-10:][::-1],  # 10 plus récentes
+        "unread_count": len([n for n in notification_system.notifications if not n['read']])
+    })
+
+@app.route('/api/notifications/<int:notification_id>/read', methods=['PUT'])
+def mark_notification_read(notification_id):
+    # Marquer une notification comme lue
+    for notification in notification_system.notifications:
+        if notification['id'] == notification_id:
+            notification['read'] = True
+            return jsonify({"status": "success"})
+    return jsonify({"status": "error"}), 404
+
+# Route De Test Pour Ticket
+@app.route('/api/test/create-ticket', methods=['GET'])
+def test_create_ticket():
+    # Test manuel - Créer un ticket directement
+    try:
+        print("🧪 Test création ticket démarré...")
+        
+        # Créer un ticket SIMPLE
+        ticket_id = ticket_system.create_ticket(
+            "test_user", 
+            "test_panne", 
+            "Test_Location"
+        )
+        
+        if ticket_id:
+            return jsonify({
+                "success": True,
+                "ticket_id": ticket_id,
+                "message": f"✅ Ticket #{ticket_id} créé avec succès!",
+                "total_tickets": len(ticket_system.get_tickets())
+            })
+        else:
+            return jsonify({
+                "success": False,
+                "message": "❌ Échec création ticket"
+            })
+            
+    except Exception as e:
+        print(f"💥 Erreur test: {e}")
+        return jsonify({
+            "success": False,
+            "message": f"❌ Erreur: {str(e)}"
+        })
+        
+@app.route('/api/test/hello', methods=['GET'])
+def test_hello():
+    # Test simple pour vérifier que le serveur marche
+    return jsonify({
+        "message": "🚀 Serveur Djely AI fonctionnel!",
+        "status": "ok",
+        "timestamp": datetime.datetime.now().isoformat()
+    })
+    
+    
 if __name__ == '__main__':
     print("🚀 Démarrage de Djely AI...")
     print("📡 Accessible sur: http://localhost:5000")

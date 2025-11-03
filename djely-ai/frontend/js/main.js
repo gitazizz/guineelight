@@ -80,3 +80,70 @@ function formatDate(dateString) {
 // Actualiser toutes les 30 secondes
 setInterval(loadDashboard, 30000);
 loadDashboard(); // Chargement initial
+
+// Gestion des notifications
+async function loadNotifications() {
+    try {
+        const response = await fetch(`${backendUrl}/api/notifications`);
+        const data = await response.json();
+        
+        updateNotificationBadge(data.unread_count);
+        displayNotifications(data.notifications);
+        
+    } catch (error) {
+        console.error('Erreur chargement notifications:', error);
+    }
+}
+
+function updateNotificationBadge(count) {
+    const badge = document.getElementById('notificationBadge');
+    if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = 'flex';
+        badge.style.justifyContent = 'center';
+        badge.style.alignItems = 'center';
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+function displayNotifications(notifications) {
+    const list = document.getElementById('notificationList');
+    
+    if (notifications.length === 0) {
+        list.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">Aucune notification</div>';
+        return;
+    }
+    
+    list.innerHTML = notifications.map(notif => `
+        <div style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0; background: ${notif.read ? 'white' : '#f8f9fa'};">
+            <div style="font-weight: bold; color: ${getNotificationColor(notif.level)};">
+                ${notif.title}
+            </div>
+            <div style="font-size: 0.9em; margin: 5px 0;">${notif.message}</div>
+            <div style="font-size: 0.8em; color: #666;">${formatDate(notif.timestamp)}</div>
+        </div>
+    `).join('');
+}
+
+function getNotificationColor(level) {
+    const colors = {
+        'info': '#007bff',
+        'warning': '#ffc107', 
+        'urgent': '#dc3545'
+    };
+    return colors[level] || '#666';
+}
+
+function toggleNotifications() {
+    const panel = document.getElementById('notificationPanel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    
+    if (panel.style.display === 'block') {
+        loadNotifications();
+    }
+}
+
+// Charger les notifications au démarrage
+loadNotifications();
+setInterval(loadNotifications, 10000); // Actualiser toutes les 10s

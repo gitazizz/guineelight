@@ -53,6 +53,23 @@
         </div>
     </div>
 
+    <!-- Widget Notifications -->
+    <div style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+        <button onclick="toggleNotifications()" style="background: #ffc107; border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; position: relative;">
+            🔔
+            <span id="notificationBadge" style="position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: none;"></span>
+        </button>
+        
+        <div id="notificationPanel" style="display: none; position: absolute; top: 60px; right: 0; width: 350px; background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); max-height: 400px; overflow-y: auto;">
+            <div style="padding: 15px; border-bottom: 1px solid #eee;">
+                <h4>📢 Notifications</h4>
+            </div>
+            <div id="notificationList">
+                <!-- Notifications chargées dynamiquement -->
+            </div>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
 </body>
 </html>
