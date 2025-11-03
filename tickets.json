@@ -1,4 +1,13 @@
 {
-  "tickets": [],
-  "next_id": 1
+  "tickets": [
+    {
+      "id": 1,
+      "user_id": "test_user",
+      "type": "test_panne",
+      "location": "Test_Location",
+      "status": "nouveau",
+      "created_at": "2025-11-03T06:12:29.245660"
+    }
+  ],
+  "next_id": 2
 }
